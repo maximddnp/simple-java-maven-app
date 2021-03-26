@@ -19,8 +19,10 @@ pipeline {
             }
         }
         stage('Run docker') {
-            container('docker') {
-                sh 'docker version && DOCKER_BUILDKIT=1 docker build --progress plain -t testing .'
+            steps {
+                container('docker') {
+                    sh 'docker version && DOCKER_BUILDKIT=1 docker build --progress plain -t testing .'
+                }
             }
         }
     }
