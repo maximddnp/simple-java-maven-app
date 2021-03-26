@@ -1,18 +1,24 @@
 pipeline {
     agent {
         kubernetes {
+            defaultContainer 'shell'
             yamlFile 'build-pod.yaml'
         }
     }
     stages {
+        stage('Checkout') {
+            checkout scm
+        }
         stage('Run maven') {
             steps {
                 container('maven') {
                     sh 'mvn -B clean install'
                 }
-                container('docker') {
-                    sh 'docker version && DOCKER_BUILDKIT=1 docker build --progress plain -t testing .'
-                }
+            }
+        }
+        stage('Run docker') {
+            container('docker') {
+                sh 'docker version && DOCKER_BUILDKIT=1 docker build --progress plain -t testing .'
             }
         }
     }
